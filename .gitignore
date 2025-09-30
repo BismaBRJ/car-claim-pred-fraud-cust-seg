@@ -1,0 +1,14 @@
+# auto-generated upon RStudio project creation
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Quarto stuff
+/.quarto/
+
+# macOS stuff
+.DS_Store
+
+# local folders of unused files
+/unused/

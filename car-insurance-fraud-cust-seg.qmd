@@ -1,0 +1,38 @@
+# Car Insurance Fraud Detection and Customer Segmentation
+
+Dataset source: <https://www.kaggle.com/datasets/khusheekapoor/vehicle-insurance-fraud-detection/>
+
+## Importing libraries
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(caret) # over/undersampling
+```
+
+## Exploring the data
+
+```{r}
+carclaims <- read_csv("./carclaims.csv")
+```
+
+```{r}
+glimpse(carclaims)
+```
+
+```{r}
+table_fraud <- table(carclaims$FraudFound)
+table_fraud
+```
+
+```{r}
+freq_fraud <- data.frame(table_fraud)
+freq_fraud
+```
+
+```{r}
+ggplot(carclaims, aes(x = FraudFound)) +
+  geom_bar()
+```
