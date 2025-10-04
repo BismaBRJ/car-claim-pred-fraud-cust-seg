@@ -28,11 +28,6 @@ table_fraud
 ```
 
 ```{r}
-freq_fraud <- data.frame(table_fraud)
-freq_fraud
-```
-
-```{r}
 ggplot(carclaims, aes(x = FraudFound)) +
   geom_bar()
 ```
