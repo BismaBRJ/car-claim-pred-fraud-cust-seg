@@ -3,7 +3,7 @@ title: "Car Insurance Claim Prediction, Fraud Detection, and Customer Segmentati
 author: "Bisma Rohpanca Joyosumarto"
 ---
 
-I feel like this ~~little~~ data science project needs no introduction. Fraud has always been rampant throughout the ages and potential preventive actions may be taken if one can reasonably foresee it; for car insurance in this case, heaps of data of past claims, some of which fraudulent, such as with the dataset used here, can help in building a predictive model for that purpose, by way of machine learning.
+I feel like this data science project needs no introduction. Fraud has always been rampant throughout the ages and potential preventive actions may be taken if one can reasonably foresee it; for car insurance in this case, heaps of data of past claims, some of which fraudulent, such as with the dataset used here, can help in building a predictive model for that purpose, by way of machine learning.
 
 Dataset source: <https://www.kaggle.com/datasets/khusheekapoor/vehicle-insurance-fraud-detection/>
 
@@ -23,13 +23,33 @@ Of course, general data cleaning and data analysis are necessary prerequisites, 
 
 # Libraries
 
-```{r}
-library(tidyverse) # data cleaning & analysis
-```
+As always, the legendary `tidyverse` for general data cleaning and analysis:
 
 ```{r}
-library(caret) # over/undersampling
+library(tidyverse)
 ```
+
+I know `caret` tries to provide a general interface for supervised learning, but I tend to prefer directly using the individual packages to expose the full functionality of each. That being said, `caret` seems to still be the better choice for certain preprocessing needs such as oversampling/undersampling, which I foresee will be needed since fraud detection data is usually imbalanced, with a minority fraudulent class.
+
+```{r}
+library(caret)
+```
+
+For clustering-related needs, including MCA, `factoextra` provides neat functions, such as their `get_` functions to extract various results (hence the name, I guess), as well as their `fviz_` plotting functions.
+
+```{r}
+library(factoextra)
+```
+
+For decision trees and random forests, as some of the classification models I'll try, here I use:
+
+```{r}
+library(rpart)
+library(rpart.plot)
+library(randomForest)
+```
+
+Base R's built-in `lm` and `glm` functions should be enough for anything regression, including the so-called logistic regression. (I think it's interesting how logistic regression is a generalized linear model and yet it is specifically a classification model due to the sigmoid, but that's a topic for another day.)
 
 # Exploring the data
 
@@ -209,4 +229,51 @@ carclaims |>
 ```{r}
 ggplot(carclaims, aes(x = FraudFound)) +
   geom_bar()
+```
+
+# Clustering with Dimensionality Reduction
+
+```{r}
+?prcomp
+?get_pca_ind
+?get_eigenvalue
+?fviz_eig
+```
+
+```{r}
+?kmeans
+```
+
+```{r}
+?fviz_cluster
+?fviz_nbclust
+```
+
+```{r}
+?hclust
+?cutree
+```
+
+```{r}
+?get_mca_ind
+?get_mca_var
+?fviz_mca_ind
+?fviz_mca_var
+?fviz_mca_biplot
+```
+
+# Regression Analysis
+
+```{r}
+?lm
+```
+
+# Fraud Detection: Classification
+
+```{r}
+?glm
+```
+
+```{r}
+
 ```
