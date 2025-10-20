@@ -1,18 +1,37 @@
-# Car Insurance Fraud Detection and Customer Segmentation
+---
+title: "Car Insurance Claim Prediction, Fraud Detection, and Customer Segmentation"
+author: "Bisma Rohpanca Joyosumarto"
+---
+
+I feel like this ~~little~~ data science project needs no introduction. Fraud has always been rampant throughout the ages and potential preventive actions may be taken if one can reasonably foresee it; for car insurance in this case, heaps of data of past claims, some of which fraudulent, such as with the dataset used here, can help in building a predictive model for that purpose, by way of machine learning.
 
 Dataset source: <https://www.kaggle.com/datasets/khusheekapoor/vehicle-insurance-fraud-detection/>
 
-## Importing libraries
+As with fraud detection datasets in general, the overarching goal may be a classification problem to predict fraud from a lot of variables.
+
+However, a regression analysis could be just as interesting, given claim size, and its explanatory power may even provide more insight, potentially contributing to better fraud detection. Also interesting, as with just about any dataset involving people, is clustering analysis, exploring potential segmentation, among policyholders in this case, which again may provide useful insight. Regression analysis can then be done on each cluster too, potentially revealing different patterns that would otherwise not be discovered.
+
+There are thus three goals in this analysis:
+
+1. Clustering analysis, to potentially discover groups among policyholders;
+
+2. Regression analysis, to investigate relationships between variables, including potential factors affecting claim size, be it per cluster or in general; and
+
+3. Fraud detection, such as with tree-based classification models.
+
+Of course, general data cleaning and data analysis are necessary prerequisites, and so will be done first.
+
+# Libraries
 
 ```{r}
-library(tidyverse)
+library(tidyverse) # data cleaning & analysis
 ```
 
 ```{r}
 library(caret) # over/undersampling
 ```
 
-## Exploring the data
+# Exploring the data
 
 ```{r}
 carclaims <- read_csv("./carclaims.csv")
@@ -23,8 +42,168 @@ glimpse(carclaims)
 ```
 
 ```{r}
-table_fraud <- table(carclaims$FraudFound)
-table_fraud
+summary(carclaims)
+```
+
+## Month
+
+```{r}
+summary(carclaims$Month)
+```
+
+```{r}
+table(carclaims$Month)
+```
+
+```{r}
+month_levels <- c("Jan", "Feb", "Mar", "Apr",
+                  "May", "Jun", "Jul", "Aug",
+                  "Sep", "Oct", "Nov", "Dec")
+```
+
+```{r}
+carclaims |>
+  mutate(Month =
+           factor(Month,
+                  levels = month_levels)) |>
+  group_by(Month) |>
+  summarize(
+    n = n()
+  )
+```
+
+```{r}
+carclaims |>
+  mutate(Month =
+           factor(Month,
+                  levels = month_levels)) |>
+  group_by(Month) |>
+  summarize(
+    n = n()
+  ) |>
+  ggplot(aes(x = Month, y = n)) +
+  geom_col()
+```
+
+```{r}
+carclaims |>
+  mutate(Month =
+           factor(Month,
+                  levels = month_levels)) |>
+  group_by(Month, FraudFound) |>
+  summarize(
+    n = n()
+  )
+```
+
+```{r}
+carclaims |>
+  mutate(Month =
+           factor(Month,
+                  levels = month_levels)) |>
+  group_by(Month, FraudFound) |>
+  summarize(
+    n = n()
+  ) |>
+  pivot_wider(
+    names_from = FraudFound,
+    values_from = n
+  )
+```
+
+```{r}
+carclaims |>
+  mutate(Month =
+           factor(Month,
+                  levels = month_levels)) |>
+  group_by(Month, FraudFound) |>
+  summarize(
+    n = n()
+  ) |>
+  ggplot(aes(x = Month, y = n)) +
+  geom_col(aes(fill = FraudFound))
+```
+
+## Week of Month, Day of Week, Month Claimed
+
+```{r}
+carclaims |>
+  group_by(WeekOfMonth, FraudFound) |>
+  summarize(n = n()) |>
+  ggplot(aes(x = WeekOfMonth, y = n)) +
+  geom_col(aes(fill = FraudFound))
+```
+
+```{r}
+carclaims |>
+  group_by(WeekOfMonthClaimed, FraudFound) |>
+  summarize(n = n()) |>
+  ggplot(aes(x = WeekOfMonthClaimed, y = n)) +
+  geom_col(aes(fill = FraudFound))
+```
+
+```{r}
+day_levels <- c("Monday", "Tuesday",
+                "Wednesday", "Thursday",
+                "Friday", "Saturday",
+                "Sunday")
+```
+
+```{r}
+carclaims |>
+  mutate(DayOfWeek = factor(DayOfWeek,
+                            levels = day_levels)) |>
+  group_by(DayOfWeek, FraudFound) |>
+  summarize(n = n()) |>
+  ggplot(aes(x = DayOfWeek, y = n)) +
+  geom_col(aes(fill = FraudFound))
+```
+
+```{r}
+carclaims |>
+  mutate(DayOfWeekClaimed = factor(DayOfWeekClaimed, levels = day_levels)) |>
+  group_by(DayOfWeekClaimed, FraudFound) |>
+  summarize(n = n()) |>
+  ggplot(aes(x = DayOfWeekClaimed, y = n)) +
+  geom_col(aes(fill = FraudFound))
+```
+
+## Fraud and Sex
+
+```{r}
+table(carclaims$FraudFound)
+```
+
+```{r}
+carclaims |>
+  group_by(FraudFound) |>
+  summarize(
+    n = n()
+  )
+```
+
+```{r}
+table(carclaims$FraudFound, carclaims$Sex)
+```
+
+```{r}
+carclaims |>
+  group_by(FraudFound, Sex) |>
+  summarize(
+    n = n()
+  )
+```
+
+```{r}
+carclaims |>
+  group_by(FraudFound, Sex) |>
+  summarize(
+    n = n()
+  ) |>
+  pivot_wider(
+    names_from = Sex,
+    values_from = n
+  )
 ```
 
 ```{r}
